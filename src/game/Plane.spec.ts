@@ -1,6 +1,6 @@
-import { describe, it, expect} from "vitest";
+import { describe, it, expect, beforeEach} from "vitest";
 import Bullet from "./Bullet";
-import { setupPlane } from "./Plane";
+import { IPlane, setupPlane } from "./Plane";
 
 describe("Plane", () => {
   describe("move", () => {
@@ -12,32 +12,24 @@ describe("Plane", () => {
     function createPlane() {
       return setupPlane({},[], defaultOptions);
     }
+    let plane: IPlane
+    beforeEach(() => {
+      plane = createPlane();
+    })
     it('moveDown', () => {
-      const plane = createPlane();
-      
       plane.moveDown()
-
       expect(plane.y).toBe(1)
     })
     it('moveUp', () => {
-      const plane = createPlane();
-
       plane.moveUp()
-
       expect(plane.y).toBe(-1)
     })
     it('moveLeft', () => {
-      const plane = createPlane();
-
       plane.moveLeft()
-
       expect(plane.x).toBe(-1)
     })
     it('moveRight', () => {
-      const plane = createPlane();
-
       plane.moveRight()
-
       expect(plane.x).toBe(1)
     })
   });
@@ -60,6 +52,15 @@ describe("Plane", () => {
 
       plane.run()
       expect(bullet.y).not.toBe(0)
+    })
+
+    it('子弹超过边界后移除', () => {
+      const bullets = []
+      const plane = setupPlane({}, bullets, {x: 0, y: 0})
+      plane.attack()
+      plane.run()
+
+      expect(bullets.length).toBe(0)
     })
   })
 });
