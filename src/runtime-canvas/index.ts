@@ -1,7 +1,7 @@
-import { createRenderer } from "vue";
-import { Application, Container, Sprite, Text, Texture } from "pixi.js";
+import { Component, ComputedOptions, createRenderer, MethodOptions } from "vue";
+import { Container, Sprite, Text, Texture } from "pixi.js";
 
-export const renderer = createRenderer<Container, Container>({
+const renderer = createRenderer<Container, Container>({
   createElement(type) {
     let element;
     switch (type) {
@@ -16,10 +16,15 @@ export const renderer = createRenderer<Container, Container>({
     }
     return element;
   },
-  patchProp(el, key, oldValue, newValiue) {
+  patchProp(el, key, oldValue, newValue) {
     switch (key) {
       case "texture":
-        (el as Sprite).texture = Texture.from(newValiue);
+        (el as Sprite).texture = Texture.from(newValue);
+        break
+      
+      default:
+        el[key] = newValue;
+        break
     }
   },
   remove(el) {
@@ -47,3 +52,7 @@ export const renderer = createRenderer<Container, Container>({
   },
   setElementText() {},
 });
+
+export const createApp = (rootcomponent: Component<any, any, any, ComputedOptions, MethodOptions>) => {
+  return renderer.createApp(rootcomponent);
+} 
